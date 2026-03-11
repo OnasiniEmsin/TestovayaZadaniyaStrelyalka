@@ -3,41 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
-public class pistol : MonoBehaviour,IWeapon
+public class pistol : Weapon
 {
     [Inject]
     public void Construct(GManager gManager){
         _gManager=gManager;
         _gManager.pistols.Add(this);
+        _magazines=gManager.pistolmagazines;
     }
-    
-    public GManager _gManager;
-    public PistolMagazine _pistolMagazine;
-    int bullets=0;
-
-    public void Fire(){
-        if(bullets<=0){
-            reload();
-        }else{
-            bullets--;
-            Debug.Log("стрелять через пистолет");
-            Debug.Log($"Патроны {bullets}");
-        }
+    protected override void printReloaded(){
+        Debug.Log("Пистолет перезаряжено");
     }
-    void reload(){
-        GetMagazine();
+    protected override void printNotFound(){
+        Debug.Log("Патроны пистолета не остались");
     }
-    void GetMagazine(){
-        if(_gManager.pistolmagazines.Count>0){
-            foreach(PistolMagazine magazine in _gManager.pistolmagazines){
-                _pistolMagazine=magazine;
-                _gManager.pistolmagazines.Remove(magazine);
-                bullets=_pistolMagazine.ammo;
-                Debug.Log("Пистолет перезаряжено");
-                break;
-            }
-        }else{
-            Debug.Log("Патроны не остались");
-        }
+    protected override void printFiring(){
+        Debug.Log("стрелять через пистолет");
     }
 }
